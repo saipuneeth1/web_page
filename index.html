@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beat the Mess Rush (P01) — Slot-and-Portion Smart Dining Flow</title>
+
+<style>
+:root{
+    --navy:#1B365D;
+    --navy-dark:#122643;
+    --slate:#334E68;
+    --teal:#0F766E;
+    --teal-bg:#CCFBF1;
+    --orange:#9A3412;
+    --orange-bg:#FFEDD5;
+    --indigo:#4338CA;
+    --indigo-bg:#E0E7FF;
+    --blue-bg:#EBF4FF;
+    --surface:#F8FAFC;
+    --card:#FFFFFF;
+    --border:#CBD2D9;
+    --text:#1F2933;
+    --muted:#52606D;
+    --green:#15803D;
+    --green-bg:#DCFCE7;
+    --amber:#B45309;
+    --amber-bg:#FEF3C7;
+    --red:#B91C1C;
+    --red-bg:#FEE2E2;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--surface);
+    color:var(--text);
+    line-height:1.5;
+}
+
+button,input,select,textarea{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* =========================
+   COMMON COMPONENTS
+========================= */
+.container{
+    width:min(1140px,94%);
+    margin:0 auto;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 2px 10px rgba(27,54,93,.05);
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:18px;
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:18px;
+}
+
+.eyebrow{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin-bottom:4px;
+}
+
+.page-title{
+    font-size:22px;
+    font-weight:800;
+    color:var(--navy);
+    margin-bottom:4px;
+}
+
+.page-subtitle{
+    font-size:13.5px;
+    color:var(--muted);
+    font-style:italic;
+    margin-bottom:16px;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--navy);
+}
+
+.muted{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.callout{
+    background:var(--blue-bg);
+    border-left:4px solid var(--navy);
+    border-radius:8px;
+    padding:14px 16px;
+    margin:14px 0;
+    font-size:14px;
+}
+
+.callout strong{
+    color:var(--navy);
+}
+
+.primary-btn{
+    width:100%;
+    padding:12px 16px;
+    border:none;
+    border-radius:10px;
+    background:var(--navy);
+    color:#fff;
+    font-weight:700;
+    font-size:14.5px;
+    margin-top:10px;
+}
+
+.primary-btn:hover{
+    background:var(--navy-dark);
+}
+
+.teal-btn{
+    width:100%;
+    padding:12px 16px;
+    border:none;
+    border-radius:10px;
+    background:var(--teal);
+    color:#fff;
+    font-weight:700;
+    font-size:14.5px;
+    margin-top:10px;
+}
+
+.teal-btn:hover{
+    filter:brightness(.92);
+}
+
+.secondary-btn{
+    padding:10px 16px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:#fff;
+    color:var(--navy);
+    font-weight:700;
+    font-size:14px;
+}
+
+.secondary-btn:hover{
+    background:var(--blue-bg);
+}
+
+.success-btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:9px;
+    background:var(--teal);
+    color:#fff;
+    font-weight:700;
+}
+
+.danger-btn{
+    padding:9px 15px;
+    border:none;
+    border-radius:9px;
+    background:var(--red);
+    color:#fff;
+    font-weight:700;
+    font-size:13.5px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.badge-green{ background:var(--green-bg); color:var(--green); }
+.badge-amber{ background:var(--amber-bg); color:var(--amber); }
+.badge-red{ background:var(--red-bg); color:var(--red); }
+.badge-navy{ background:var(--blue-bg); color:var(--navy); }
+.badge-teal{ background:var(--teal-bg); color:var(--teal); }
+.badge-orange{ background:var(--orange-bg); color:var(--orange); }
+.badge-indigo{ background:var(--indigo-bg); color:var(--indigo); }
+
+/* =========================
+   AUTH PAGES
+========================= */
+.auth-container{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:linear-gradient(135deg,#EBF4FF 0%,#F8FAFC 55%,#CCFBF1 100%);
+}
+
+#adminLoginPage{
+    background:linear-gradient(135deg,#122643 0%,#1B365D 60%,#334E68 100%);
+}
+
+.auth-box{
+    width:min(480px,100%);
+    background:#fff;
+    padding:32px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    box-shadow:0 12px 32px rgba(27,54,93,.12);
+}
+
+.auth-box .eyebrow{
+    text-align:center;
+}
+
+.auth-box h1{
+    text-align:center;
+    color:var(--navy);
+    font-size:24px;
+    margin-bottom:4px;
+}
+
+.auth-box h2{
+    text-align:center;
+    font-size:16px;
+    color:var(--slate);
+    font-weight:600;
+    margin-bottom:18px;
+}
+
+.form-group{
+    margin-bottom:14px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--navy);
+    margin-bottom:5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+    background:#fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:var(--navy);
+    box-shadow:0 0 0 3px rgba(27,54,93,.1);
+}
+
+.auth-message{
+    margin-top:12px;
+    text-align:center;
+    font-weight:700;
+    font-size:13.5px;
+}
+
+.auth-switch{
+    text-align:center;
+    margin-top:16px;
+    font-size:13.5px;
+    color:var(--muted);
+}
+
+.auth-link-btn{
+    border:none;
+    background:none;
+    color:var(--navy);
+    font-weight:700;
+    text-decoration:underline;
+}
+
+.demo-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:16px 0 12px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:600;
+}
+
+.demo-divider::before,
+.demo-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--border);
+}
+
+.auth-actions-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:8px;
+}
+
+/* =========================
+   STUDENT HEADER & 6-STEP BAR
+========================= */
+.student-header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:var(--navy);
+    color:#fff;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+
+.student-header-inner{
+    width:min(1140px,94%);
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.brand-block .brand-eyebrow{
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#CBD2D9;
+    font-weight:700;
+}
+
+.brand-block .logo{
+    font-size:18px;
+    font-weight:800;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.user-pill{
+    background:rgba(255,255,255,.14);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+}
+
+.header-util-btn{
+    padding:6px 11px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:8px;
+    background:transparent;
+    color:#fff;
+    font-size:12.5px;
+    font-weight:600;
+}
+
+.header-util-btn:hover{
+    background:rgba(255,255,255,.15);
+}
+
+/* 6-Step Core Loop Stepper (Matches CP5.9 Diagram) */
+.stepper-bar{
+    background:#fff;
+    border-bottom:1px solid var(--border);
+}
+
+.stepper-inner{
+    width:min(1140px,94%);
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    padding:12px 0;
+}
+
+.step-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    padding:9px 11px;
+    border-radius:10px;
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    text-align:left;
+}
+
+.step-btn .step-num{
+    font-size:10.5px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+}
+
+.step-btn .step-name{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--navy);
+}
+
+.step-btn:hover{
+    border-color:var(--navy);
+    background:var(--blue-bg);
+}
+
+.step-btn.active[data-accent="navy"]{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+}
+.step-btn.active[data-accent="teal"]{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+}
+.step-btn.active[data-accent="orange"]{
+    background:var(--orange);
+    border-color:var(--orange);
+    color:#fff;
+}
+.step-btn.active[data-accent="indigo"]{
+    background:var(--indigo);
+    border-color:var(--indigo);
+    color:#fff;
+}
+
+.step-btn.active .step-num,
+.step-btn.active .step-name{
+    color:#fff;
+}
+
+.step-btn.completed{
+    border-color:var(--teal);
+}
+
+.student-main{
+    width:min(1140px,94%);
+    margin:22px auto 40px;
+}
+
+/* =========================
+   STEP 1: LIVE CROWD METER
+========================= */
+.crowd-banner{
+    border-radius:14px;
+    padding:24px;
+    border:2px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.crowd-banner.green{ background:var(--green-bg); border-color:var(--green); }
+.crowd-banner.amber{ background:var(--amber-bg); border-color:var(--amber); }
+.crowd-banner.red{ background:var(--red-bg); border-color:var(--red); }
+
+.crowd-status-title{
+    font-size:24px;
+    font-weight:800;
+    margin:4px 0;
+}
+
+.crowd-banner.green .crowd-status-title{ color:var(--green); }
+.crowd-banner.amber .crowd-status-title{ color:var(--amber); }
+.crowd-banner.red .crowd-status-title{ color:var(--red); }
+
+.stat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+}
+
+.stat-card span{
+    display:block;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.stat-card strong{
+    display:block;
+    font-size:26px;
+    color:var(--navy);
+    margin-top:6px;
+}
+
+/* =========================
+   STEP 2: SLOT CARDS
+========================= */
+.slot-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+    margin-top:14px;
+}
+
+.slot-card{
+    border:2px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    background:#fff;
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.slot-card:hover{
+    border-color:var(--navy);
+    transform:translateY(-1px);
+}
+
+.slot-card.selected{
+    border-color:var(--navy);
+    background:var(--blue-bg);
+    box-shadow:0 0 0 3px rgba(27,54,93,.12);
+}
+
+.slot-time{
+    font-size:16px;
+    font-weight:800;
+    color:var(--navy);
+    margin-bottom:6px;
+}
+
+.slot-bar{
+    height:8px;
+    background:#E2E8F0;
+    border-radius:999px;
+    overflow:hidden;
+    margin:10px 0 6px;
+}
+
+.slot-bar-fill{
+    height:100%;
+    border-radius:999px;
+}
+
+/* =========================
+   STEP 3: PORTION SELECTOR
+========================= */
+.portion-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#fff;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+}
+
+.portion-item-name{
+    font-weight:800;
+    color:var(--navy);
+    font-size:15px;
+}
+
+.portion-toggle{
+    display:inline-flex;
+    border:1.5px solid var(--teal);
+    border-radius:9px;
+    overflow:hidden;
+}
+
+.portion-toggle button{
+    padding:8px 16px;
+    border:none;
+    background:#fff;
+    color:var(--teal);
+    font-weight:700;
+    font-size:13.5px;
+}
+
+.portion-toggle button.active{
+    background:var(--teal);
+    color:#fff;
+}
+
+/* =========================
+   STEP 4 & 5: DIGITAL PASS & COUNTER SCAN
+========================= */
+.dining-pass{
+    max-width:520px;
+    margin:0 auto;
+    background:#fff;
+    border:2px solid var(--teal);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(15,118,110,.12);
+}
+
+.pass-header{
+    background:var(--teal);
+    color:#fff;
+    padding:16px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.pass-body{
+    padding:22px;
+}
+
+.pass-token{
+    font-size:26px;
+    font-weight:900;
+    letter-spacing:.06em;
+    color:var(--navy);
+    text-align:center;
+    margin:6px 0 14px;
+}
+
+.qr-box{
+    width:136px;
+    height:136px;
+    margin:0 auto 14px;
+    border:2px solid var(--navy);
+    border-radius:10px;
+    padding:8px;
+    background:#fff;
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:2px;
+}
+
+.qr-cell{
+    background:#fff;
+}
+
+.qr-cell.dark{
+    background:var(--navy);
+}
+
+.pass-detail-row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px dashed var(--border);
+    font-size:14px;
+}
+
+.pass-detail-row:last-child{
+    border-bottom:none;
+}
+
+.counter-serving-box{
+    background:var(--orange-bg);
+    border:2px solid var(--orange);
+    border-radius:14px;
+    padding:20px;
+    margin:14px 0;
+}
+
+.counter-serving-box h3{
+    color:var(--orange);
+    margin-bottom:8px;
+}
+
+/* =========================
+   STEP 6: 1-TAP FEEDBACK
+========================= */
+.rating-pills{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:10px 0 16px;
+}
+
+.rating-pill{
+    flex:1;
+    min-width:95px;
+    padding:12px 10px;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    background:#fff;
+    font-weight:700;
+    color:var(--navy);
+    text-align:center;
+}
+
+.rating-pill:hover{
+    border-color:var(--indigo);
+    background:var(--indigo-bg);
+}
+
+.rating-pill.selected{
+    background:var(--indigo);
+    border-color:var(--indigo);
+    color:#fff;
+}
+
+/* =========================
+   ADMIN APP (MATCHING PALETTE)
+========================= */
+#adminApp{
+    min-height:100vh;
+    background:var(--surface);
+}
+
+.admin-header{
+    background:var(--navy);
+    color:#fff;
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.admin-layout{
+    display:flex;
+    min-height:calc(100vh - 60px);
+}
+
+.admin-sidebar{
+    width:235px;
+    background:#122643;
+    padding:18px 12px;
+    flex-shrink:0;
+}
+
+.admin-sidebar button{
+    width:100%;
+    text-align:left;
+    padding:11px 14px;
+    margin-bottom:6px;
+    border:none;
+    border-radius:9px;
+    background:transparent;
+    color:#CBD2D9;
+    font-weight:600;
+    font-size:13.5px;
+}
+
+.admin-sidebar button:hover,
+.admin-sidebar button.active{
+    background:rgba(255,255,255,.15);
+    color:#fff;
+}
+
+.admin-content{
+    flex:1;
+    padding:24px;
+    overflow:auto;
+}
+
+.admin-page{
+    display:none;
+}
+
+.admin-page.active{
+    display:block;
+}
+
+.admin-table-wrapper{
+    overflow-x:auto;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.admin-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:680px;
+    font-size:13.5px;
+}
+
+.admin-table th,
+.admin-table td{
+    padding:12px 14px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+}
+
+.admin-table th{
+    background:var(--navy);
+    color:#fff;
+    font-weight:700;
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+}
+
+.admin-table tr:nth-child(even) td{
+    background:#F8FAFC;
+}
+
+.vote-bar{
+    margin:10px 0;
+}
+
+.vote-bar-header{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    margin-bottom:4px;
+}
+
+.bar{
+    height:9px;
+    background:#E2E8F0;
+    border-radius:999px;
+    overflow:hidden;
+}
+
+.bar-fill{
+    height:100%;
+    background:var(--navy);
+    border-radius:999px;
+}
+
+.menu-editor-card textarea{
+    width:100%;
+    min-height:130px;
+    margin-top:8px;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+}
+
+.search-input{
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    min-width:220px;
+    background:#fff;
+}
+
+.admin-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+}
+
+.step-nav-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-top:18px;
+    flex-wrap:wrap;
+}
+
+@media(max-width:860px){
+    .stepper-inner{
+        grid-template-columns:repeat(3,1fr);
+    }
+    .admin-layout{
+        flex-direction:column;
+    }
+    .admin-sidebar{
+        width:100%;
+        display:flex;
+        overflow-x:auto;
+        gap:6px;
+    }
+    .admin-sidebar button{
+        width:auto;
+        min-width:max-content;
+        margin-bottom:0;
+    }
+}
+
+@media(max-width:520px){
+    .stepper-inner{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .auth-actions-row{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     STUDENT LOGIN (DEFAULT ENTRY FOR QUICK TESTING)
+========================================================= -->
+<div id="studentLoginPage" class="auth-container">
+    <div class="auth-box">
+        <div class="eyebrow">INT335 · DESIGN THINKING · P01</div>
+        <h1>Beat the Mess Rush</h1>
+        <h2>Slot-and-Portion Smart Dining Flow</h2>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Student ID</label>
+                <input type="number" id="loginStudentId" placeholder="e.g., 101" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="primary-btn">Student Login</button>
+            <div id="loginMessage" class="auth-message"></div>
+        </form>
+
+        <div class="demo-divider">OR TRY PROTOTYPE INSTANTLY</div>
+
+        <div class="auth-actions-row">
+            <button type="button" class="teal-btn" style="margin-top:0;" onclick="quickDemoStudent()">
+                Try Hosteller Flow
+            </button>
+            <button type="button" class="secondary-btn" onclick="showAdminLoginPage()">
+                Mess Staff / In-Charge
+            </button>
+        </div>
+
+        <div class="auth-switch">
+            New hosteller?
+            <button type="button" class="auth-link-btn" onclick="showRegistration()">Register Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     STUDENT REGISTRATION
+========================================================= -->
+<div id="registrationPage" class="auth-container hidden">
+    <div class="auth-box">
+        <div class="eyebrow">INT335 · DESIGN THINKING · P01</div>
+        <h1>Beat the Mess Rush</h1>
+        <h2>Hosteller Registration</h2>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="regName" placeholder="e.g., Rohan Verma" required>
+            </div>
+            <div class="form-group">
+                <label>Student ID</label>
+                <input type="number" id="regStudentId" min="1" placeholder="e.g., 12" required>
+            </div>
+            <div class="form-group">
+                <label>Hostel / Room Number</label>
+                <input type="text" id="regRoom" placeholder="e.g., BH-3 / 402" required>
+            </div>
+            <div class="form-group">
+                <label>Food Preference</label>
+                <select id="regFoodPreference" required>
+                    <option value="">Select</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" minlength="4" placeholder="Min 4 characters" required>
+            </div>
+            <button type="submit" class="primary-btn">Create Account</button>
+            <div id="registrationMessage" class="auth-message"></div>
+        </form>
+
+        <div class="auth-switch">
+            Already registered?
+            <button type="button" class="auth-link-btn" onclick="showStudentLogin()">Back to Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     IN-CHARGE / MESS STAFF LOGIN
+========================================================= -->
+<div id="adminLoginPage" class="auth-container hidden">
+    <div class="auth-box">
+        <div class="eyebrow">INT335 · DESIGN THINKING · P01</div>
+        <h1>Mess Operations Dashboard</h1>
+        <h2>In-Charge & Kitchen Staff Login</h2>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="adminUsername" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPassword" value="admin123" required>
+            </div>
+            <button type="submit" class="primary-btn">Open Mess Staff Dashboard</button>
+            <div id="adminLoginMessage" class="auth-message"></div>
+        </form>
+
+        <div class="auth-switch">
+            Demo credentials: <strong>admin / admin123</strong><br><br>
+            <button type="button" class="auth-link-btn" onclick="showStudentLogin()">← Back to Student Login</button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     STUDENT APPLICATION (6-STEP CORE LOOP + EXTRAS)
+========================================================= -->
+<div id="mainApp" class="hidden">
+    <header class="student-header">
+        <div class="student-header-inner">
+            <div class="brand-block">
+                <div class="brand-eyebrow">INT335 · Design Thinking · P01 · Beat the Mess Rush</div>
+                <div class="logo">Slot-and-Portion Smart Dining Flow</div>
+            </div>
+            <div class="header-right">
+                <div class="user-pill">
+                    <strong id="headerUserName">Student</strong> · <span id="headerUserGroup">Group A</span>
+                </div>
+                <button class="header-util-btn" onclick="showStudentPage('menuVotePage')">Menu & Voting</button>
+                <button class="header-util-btn" onclick="showStudentPage('profilePage')">Profile</button>
+                <button class="header-util-btn" onclick="studentLogout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 6-Step Core Loop Navigation (Directly Matching CP5.9 User Flow Diagram) -->
+    <div class="stepper-bar">
+        <div class="stepper-inner">
+            <button class="step-btn active" data-step="step1Page" data-accent="navy" onclick="showStudentPage('step1Page')">
+                <span class="step-num">Step 1</span>
+                <span class="step-name">Live Crowd</span>
+            </button>
+            <button class="step-btn" data-step="step2Page" data-accent="navy" onclick="showStudentPage('step2Page')">
+                <span class="step-num">Step 2</span>
+                <span class="step-name">Select Meal Slot</span>
+            </button>
+            <button class="step-btn" data-step="step3Page" data-accent="teal" onclick="showStudentPage('step3Page')">
+                <span class="step-num">Step 3</span>
+                <span class="step-name">Choose Portion</span>
+            </button>
+            <button class="step-btn" data-step="step4Page" data-accent="teal" onclick="showStudentPage('step4Page')">
+                <span class="step-num">Step 4</span>
+                <span class="step-name">Dining Pass</span>
+            </button>
+            <button class="step-btn" data-step="step5Page" data-accent="orange" onclick="showStudentPage('step5Page')">
+                <span class="step-num">Step 5</span>
+                <span class="step-name">Counter Scan</span>
+            </button>
+            <button class="step-btn" data-step="step6Page" data-accent="indigo" onclick="showStudentPage('step6Page')">
+                <span class="step-num">Step 6</span>
+                <span class="step-name">Quick Feedback</span>
+            </button>
+        </div>
+    </div>
+
+    <main class="student-main">
+
+        <!-- STEP 1: HOME / LIVE CROWD -->
+        <section id="step1Page" class="student-page">
+            <div class="eyebrow">Step 1 of 6 · Home / Live Crowd</div>
+            <h1 class="page-title">University Hostel Mess — Live Crowd Status</h1>
+            <p class="page-subtitle">Check current queue status before walking over from your hostel or classes.</p>
+
+            <div id="liveCrowdBanner" class="crowd-banner amber">
+                <div>
+                    <span id="liveCrowdBadge" class="badge badge-amber">AMBER · MODERATE RUSH</span>
+                    <div id="liveCrowdTitle" class="crowd-status-title">Busy Right Now (~12–15 min wait)</div>
+                    <p id="liveCrowdDesc" class="muted">Peak lunch rush is active. Choosing the 1:15–1:30 PM slot cuts wait time to under 4 minutes.</p>
+                </div>
+                <div style="min-width:210px;">
+                    <button class="primary-btn" style="margin-top:0;" onclick="showStudentPage('step2Page')">
+                        Pick a Staggered Slot →
+                    </button>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span>Estimated Wait Time</span>
+                    <strong id="statWaitTime">14 min</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Dining Hall Occupancy</span>
+                    <strong id="statOccupancy">78%</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Recommended Low-Wait Slot</span>
+                    <strong id="statBestSlot" style="color:var(--teal);font-size:20px;">1:15 – 1:30 PM</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Your Active Pass</span>
+                    <strong id="statActivePass" style="font-size:20px;">Not Booked</strong>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>Why book a slot & portion?</strong> Selecting a 15-minute arrival window spreads out peak queues, while choosing <strong>Half or Full</strong> portions helps mess staff cook the right batch size and cut plate waste.
+            </div>
+        </section>
+
+        <!-- STEP 2: SELECT MEAL SLOT -->
+        <section id="step2Page" class="student-page hidden">
+            <div class="eyebrow">Step 2 of 6 · Select Meal Slot</div>
+            <h1 class="page-title">Choose Your 15-Minute Staggered Dining Slot</h1>
+            <p class="page-subtitle">Pick a meal and a low-crowd arrival window that fits your class break.</p>
+
+            <div class="card">
+                <div class="form-group" style="max-width:320px;margin-bottom:0;">
+                    <label>Select Meal Window</label>
+                    <select id="slotMealSelect" onchange="renderSlotCards()">
+                        <option value="lunch" selected>Lunch (12:45 PM – 2:00 PM)</option>
+                        <option value="dinner">Dinner (7:45 PM – 9:00 PM)</option>
+                        <option value="breakfast">Breakfast (7:45 AM – 9:00 AM)</option>
+                        <option value="snacks">Snacks (4:45 PM – 5:45 PM)</option>
+                    </select>
+                </div>
+                <div id="slotCardsGrid" class="slot-grid"></div>
+            </div>
+
+            <div class="step-nav-footer">
+                <button class="secondary-btn" onclick="showStudentPage('step1Page')">← Back to Live Crowd</button>
+                <button class="primary-btn" style="width:auto;min-width:220px;margin-top:0;" onclick="proceedToPortionStep()">
+                    Continue to Choose Portion →
+                </button>
+            </div>
+            <div id="step2Message" class="auth-message"></div>
+        </section>
+
+        <!-- STEP 3: CHOOSE PORTION -->
+        <section id="step3Page" class="student-page hidden">
+            <div class="eyebrow">Step 3 of 6 · Choose Portion</div>
+            <h1 class="page-title">Select Your Meal & Portion Size (Half / Full)</h1>
+            <p class="page-subtitle">Tell the mess counter exactly how much you will eat to avoid plate waste.</p>
+
+            <div class="callout" style="background:var(--teal-bg);border-left-color:var(--teal);">
+                <strong style="color:var(--teal);">Selected Slot:</strong>
+                <span id="step3SlotSummary">Lunch · 1:15 – 1:30 PM</span>
+            </div>
+
+            <div class="card">
+                <div class="form-group" style="max-width:360px;">
+                    <label>Preferred Main Dish (Today's Menu)</label>
+                    <select id="portionMainDish"></select>
+                </div>
+
+                <h3 style="color:var(--navy);margin:14px 0 10px;font-size:15px;">Portion Preferences</h3>
+
+                <div class="portion-row">
+                    <div>
+                        <div class="portion-item-name">Rice</div>
+                        <div class="muted">Half (~1 scoop) or Full (~2 scoops)</div>
+                    </div>
+                    <div class="portion-toggle" data-item="rice">
+                        <button type="button" onclick="setPortion('rice','Half',this)">Half</button>
+                        <button type="button" class="active" onclick="setPortion('rice','Full',this)">Full</button>
+                    </div>
+                </div>
+
+                <div class="portion-row">
+                    <div>
+                        <div class="portion-item-name">Roti / Chapati</div>
+                        <div class="muted">Half (2 rotis) or Full (4 rotis)</div>
+                    </div>
+                    <div class="portion-toggle" data-item="roti">
+                        <button type="button" onclick="setPortion('roti','Half',this)">Half</button>
+                        <button type="button" class="active" onclick="setPortion('roti','Full',this)">Full</button>
+                    </div>
+                </div>
+
+                <div class="portion-row">
+                    <div>
+                        <div class="portion-item-name">Dal / Curry</div>
+                        <div class="muted">Half bowl or Full bowl</div>
+                    </div>
+                    <div class="portion-toggle" data-item="dal">
+                        <button type="button" onclick="setPortion('dal','Half',this)">Half</button>
+                        <button type="button" class="active" onclick="setPortion('dal','Full',this)">Full</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-nav-footer">
+                <button class="secondary-btn" onclick="showStudentPage('step2Page')">← Change Slot</button>
+                <button class="teal-btn" style="width:auto;min-width:240px;margin-top:0;" onclick="confirmBookingAndGeneratePass()">
+                    Confirm & Generate Dining Pass →
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 4: DIGITAL DINING PASS -->
+        <section id="step4Page" class="student-page hidden">
+            <div class="eyebrow">Step 4 of 6 · Digital Dining Pass</div>
+            <h1 class="page-title">Your Digital Dining Pass & Portion Token</h1>
+            <p class="page-subtitle">Present this pass at the mess serving counter during your selected slot.</p>
+
+            <div id="passEmptyNotice" class="callout hidden">
+                You haven't booked a meal slot yet. <button class="auth-link-btn" onclick="showStudentPage('step2Page')">Pick a slot now →</button>
+            </div>
+
+            <div id="digitalPassContainer"></div>
+
+            <div class="step-nav-footer">
+                <button class="secondary-btn" onclick="showStudentPage('step3Page')">← Edit Portion</button>
+                <button class="primary-btn" style="width:auto;min-width:230px;margin-top:0;background:var(--orange);" onclick="showStudentPage('step5Page')">
+                    Simulate Mess Counter Scan →
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 5: MESS COUNTER SCAN -->
+        <section id="step5Page" class="student-page hidden">
+            <div class="eyebrow">Step 5 of 6 · Mess Counter Scan</div>
+            <h1 class="page-title">Mess Counter Verification & Serving View</h1>
+            <p class="page-subtitle">Staff scans your token and serves the exact Half/Full portion selected.</p>
+
+            <div id="counterScanContent"></div>
+
+            <div class="step-nav-footer">
+                <button class="secondary-btn" onclick="showStudentPage('step4Page')">← Back to Dining Pass</button>
+                <button class="primary-btn" style="width:auto;min-width:230px;margin-top:0;background:var(--indigo);" onclick="showStudentPage('step6Page')">
+                    Proceed to Quick Feedback →
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 6: QUICK FEEDBACK -->
+        <section id="step6Page" class="student-page hidden">
+            <div class="eyebrow">Step 6 of 6 · Quick Feedback</div>
+            <h1 class="page-title">1-Tap Meal & Wait-Time Feedback</h1>
+            <p class="page-subtitle">Updates kitchen operations immediately so tomorrow's peak rush runs even smoother.</p>
+
+            <div class="card" style="max-width:680px;margin:0 auto;">
+                <form id="feedbackForm">
+                    <label style="font-weight:700;color:var(--navy);font-size:14px;">1. How was your wait time today?</label>
+                    <div class="rating-pills" id="waitRatingPills">
+                        <button type="button" class="rating-pill" onclick="selectWaitRating('Fast (<5m)',this)">Fast (&lt;5m)</button>
+                        <button type="button" class="rating-pill" onclick="selectWaitRating('Moderate (5–10m)',this)">Moderate (5–10m)</button>
+                        <button type="button" class="rating-pill" onclick="selectWaitRating('Slow (>10m)',this)">Slow (&gt;10m)</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. Food Quality & Portion Accuracy</label>
+                        <select id="feedbackRating" required>
+                            <option value="">Select rating</option>
+                            <option value="5">5 / 5 — Excellent (Right portion, no waste)</option>
+                            <option value="4">4 / 5 — Good</option>
+                            <option value="3">3 / 5 — Average</option>
+                            <option value="2">2 / 5 — Poor</option>
+                            <option value="1">1 / 5 — Very Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>3. Optional Note for Mess Staff</label>
+                        <textarea id="feedbackText" rows="3" placeholder="e.g., Half rice portion was just right, zero waste today!"></textarea>
+                    </div>
+
+                    <button type="submit" class="primary-btn" style="background:var(--indigo);">
+                        Submit 1-Tap Feedback
+                    </button>
+                    <div id="feedbackMessage" class="auth-message"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECONDARY PAGE: MENU & PRE-MEAL VOTING -->
+        <section id="menuVotePage" class="student-page hidden">
+            <div class="eyebrow">Supporting Feature · Pre-Meal Menu Voting</div>
+            <h1 class="page-title">Today's Menu Options & Pre-Meal Voting</h1>
+            <p class="page-subtitle">Vote for preferred dishes so mess staff can plan popular items accurately.</p>
+
+            <div id="votingStatusBox"></div>
+            <form id="votingForm">
+                <div id="studentVotingGrid" class="grid"></div>
+                <button type="submit" class="primary-btn" style="max-width:300px;">Submit Menu Vote</button>
+            </form>
+            <div id="votingMessage" class="auth-message" style="text-align:left;"></div>
+
+            <h2 style="color:var(--navy);margin:24px 0 12px;font-size:17px;">Current Final Menu</h2>
+            <div id="studentFinalMenuGrid" class="grid"></div>
+        </section>
+
+        <!-- SECONDARY PAGE: STUDENT PROFILE -->
+        <section id="profilePage" class="student-page hidden">
+            <div class="eyebrow">Hosteller Account</div>
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Hosteller details linked to your dining passes.</p>
+            <div class="card" style="max-width:560px;">
+                <div class="pass-detail-row"><strong>Name</strong><span id="profileName">-</span></div>
+                <div class="pass-detail-row"><strong>Student ID</strong><span id="profileStudentId">-</span></div>
+                <div class="pass-detail-row"><strong>Hostel / Room</strong><span id="profileRoom">-</span></div>
+                <div class="pass-detail-row"><strong>Food Preference</strong><span id="profileFoodPreference">-</span></div>
+                <div class="pass-detail-row"><strong>Assigned Group</strong><span id="profileGroup">-</span></div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- =========================================================
+     ADMIN / MESS STAFF APPLICATION
+========================================================= -->
+<div id="adminApp" class="hidden">
+    <header class="admin-header">
+        <div>
+            <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#CBD2D9;font-weight:700;">
+                INT335 · Design Thinking · P01 · Back-of-House Operations
+            </div>
+            <div style="font-size:18px;font-weight:800;">Beat the Mess Rush — Mess Staff Dashboard</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+            <button class="header-util-btn" onclick="quickDemoStudent()">Switch to Student View</button>
+            <button class="danger-btn" onclick="adminLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <button class="active" onclick="showAdminPage('adminDashboardPage')">Slot & Portion Demand</button>
+            <button onclick="showAdminPage('adminPassesPage')">Dining Passes & Scan</button>
+            <button onclick="showAdminPage('adminVotingPage')">Menu Voting Results</button>
+            <button onclick="showAdminPage('adminMenuPage')">Menu Management</button>
+            <button onclick="showAdminPage('adminFinalMenuPage')">Final Menu</button>
+            <button onclick="showAdminPage('adminStudentsPage')">Hostellers</button>
+            <button onclick="showAdminPage('adminFeedbackPage')">Feedback Log</button>
+        </aside>
+
+        <main class="admin-content">
+
+            <!-- ADMIN DASHBOARD: SLOT & PORTION DEMAND SUMMARY (MATCHES CP5.10 TASK 4) -->
+            <section id="adminDashboardPage" class="admin-page active">
+                <div class="eyebrow">Back-of-House Outcome · Real-Time Kitchen Demand</div>
+                <h1 class="page-title">Upcoming Slot & Portion Demand Summary</h1>
+                <p class="page-subtitle">Aggregated from Steps 2 & 3 so mess staff can plan batch refills and cut plate waste.</p>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span>Total Booked Today</span>
+                        <strong id="adminPassCount">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Half-Rice Requests</span>
+                        <strong id="adminHalfRiceCount" style="color:var(--teal);">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Half-Roti Requests</span>
+                        <strong id="adminHalfRotiCount" style="color:var(--teal);">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Feedback Received</span>
+                        <strong id="adminFeedbackCount">0</strong>
+                    </div>
+                </div>
+
+                <!-- Live Crowd Control -->
+                <div class="card">
+                    <h2 style="font-size:16px;color:var(--navy);margin-bottom:8px;">Broadcast Live Crowd Status to Hostellers</h2>
+                    <p class="muted" style="margin-bottom:12px;">Updating this immediately changes Step 1 (Live Crowd) for all students.</p>
+                    <div class="admin-actions" style="margin-bottom:0;">
+                        <button class="secondary-btn" style="border-color:var(--green);color:var(--green);" onclick="setCrowdStatus('green')">Set GREEN (Low Wait)</button>
+                        <button class="secondary-btn" style="border-color:var(--amber);color:var(--amber);" onclick="setCrowdStatus('amber')">Set AMBER (Moderate)</button>
+                        <button class="secondary-btn" style="border-color:var(--red);color:var(--red);" onclick="setCrowdStatus('red')">Set RED (Peak Rush)</button>
+                    </div>
+                </div>
+
+                <!-- Upcoming Slot Breakdown Table -->
+                <div class="card">
+                    <h2 style="font-size:16px;color:var(--navy);margin-bottom:12px;">Lunch Slot Headcount & Portion Breakdown</h2>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>15-Min Slot</th>
+                                    <th>Booked Headcount</th>
+                                    <th>Rice (Half / Full)</th>
+                                    <th>Roti (Half / Full)</th>
+                                    <th>Dal (Half / Full)</th>
+                                    <th>Kitchen Action Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminSlotDemandTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN PASSES -->
+            <section id="adminPassesPage" class="admin-page">
+                <div class="eyebrow">Counter Operations</div>
+                <h1 class="page-title">Generated Digital Dining Passes</h1>
+                <p class="page-subtitle">All active student tokens with selected slots and Half/Full portion preferences.</p>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Student</th>
+                                <th>Meal & Slot</th>
+                                <th>Main Dish</th>
+                                <th>Portions (Rice / Roti / Dal)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPassesTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ADMIN VOTING -->
+            <section id="adminVotingPage" class="admin-page">
+                <div class="eyebrow">Menu Demand</div>
+                <h1 class="page-title">Today's Pre-Meal Voting Results</h1>
+                <p class="page-subtitle">Helps estimate dish popularity before cooking begins.</p>
+                <div id="adminVotingGrid" class="grid"></div>
+            </section>
+
+            <!-- ADMIN MENU -->
+            <section id="adminMenuPage" class="admin-page">
+                <div class="eyebrow">Kitchen Configuration</div>
+                <h1 class="page-title">Menu Management</h1>
+                <p class="page-subtitle">Enter one dish per line. Updates student Step 3 and Voting pages.</p>
+                <div class="grid">
+                    <div class="card menu-editor-card"><h3>Breakfast</h3><textarea id="menuBreakfast"></textarea></div>
+                    <div class="card menu-editor-card"><h3>Lunch</h3><textarea id="menuLunch"></textarea></div>
+                    <div class="card menu-editor-card"><h3>Snacks</h3><textarea id="menuSnacks"></textarea></div>
+                    <div class="card menu-editor-card"><h3>Dinner</h3><textarea id="menuDinner"></textarea></div>
+                </div>
+                <div class="admin-actions">
+                    <button class="success-btn" onclick="saveAdminMenu()">Save Menu</button>
+                    <button class="secondary-btn" onclick="resetAdminMenu()">Reset Default</button>
+                </div>
+                <div id="menuSaveMessage"></div>
+            </section>
+
+            <!-- ADMIN FINAL MENU -->
+            <section id="adminFinalMenuPage" class="admin-page">
+                <div class="eyebrow">Kitchen Plan</div>
+                <h1 class="page-title">Final Menu Selection</h1>
+                <p class="page-subtitle">Use today's top voted items or set final dishes manually.</p>
+                <div class="admin-actions">
+                    <button class="success-btn" onclick="useWinnersAsFinalMenu()">Use Today's Vote Winners</button>
+                </div>
+                <div id="adminFinalMenuControls" class="grid"></div>
+                <button class="primary-btn" style="max-width:260px;" onclick="saveFinalMenu()">Save Final Menu</button>
+                <div id="finalMenuSaveMessage" class="auth-message" style="text-align:left;"></div>
+            </section>
+
+            <!-- ADMIN STUDENTS -->
+            <section id="adminStudentsPage" class="admin-page">
+                <div class="eyebrow">Directory</div>
+                <h1 class="page-title">Registered Hostellers</h1>
+                <p class="page-subtitle">Search and filter hostel residents.</p>
+                <div class="admin-actions">
+                    <input type="text" id="studentSearch" class="search-input" placeholder="Search name or ID..." oninput="renderAdminStudents()">
+                    <select id="studentGroupFilter" class="search-input" onchange="renderAdminStudents()">
+                        <option value="all">All Groups</option>
+                        <option value="A">Group A</option>
+                        <option value="B">Group B</option>
+                        <option value="C">Group C</option>
+                        <option value="D">Group D</option>
+                    </select>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Student ID</th>
+                                <th>Room</th>
+                                <th>Group</th>
+                                <th>Preference</th>
+                                <th>Booked Slot</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminStudentsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ADMIN FEEDBACK -->
+            <section id="adminFeedbackPage" class="admin-page">
+                <div class="eyebrow">Step 6 Insights</div>
+                <h1 class="page-title">Student Feedback Log</h1>
+                <p class="page-subtitle">Wait-time reports and portion accuracy ratings from hostellers.</p>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Student</th>
+                                <th>Wait Experience</th>
+                                <th>Quality Rating</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminFeedbackTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   STORAGE KEYS & DEFAULTS
+========================================================= */
+const USERS_KEY = "bmr_users_v2";
+const CURRENT_USER_KEY = "bmr_currentUser_v2";
+const VOTES_KEY = "bmr_votes_v2";
+const FEEDBACK_KEY = "bmr_feedback_v2";
+const PASSES_KEY = "bmr_passes_v2";
+const MENU_KEY = "bmr_menu_v2";
+const FINAL_MENU_KEY = "bmr_finalMenu_v2";
+const CROWD_KEY = "bmr_crowdStatus_v2";
+const ADMIN_SESSION_KEY = "bmr_adminSession_v2";
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+const DEFAULT_MENU = {
+    breakfast: ["Idli & Sambar", "Aloo Paratha & Curd", "Poha & Jalebi", "Masala Dosa"],
+    lunch: ["Rajma Rice & Roti", "Dal Makhani & Rice", "Chole Rice & Roti", "Veg Biryani & Raita"],
+    snacks: ["Samosa & Tea", "Veg Sandwich", "Bread Pakora", "Biscuits & Coffee"],
+    dinner: ["Paneer Butter Masala & Roti", "Dal Tadka & Jeera Rice", "Mix Veg & Roti", "Veg Pulao"]
+};
+
+const MEAL_SLOTS = {
+    breakfast: [
+        { id:"0745", label:"7:45 – 8:00 AM", cap:40, baseBooked:14 },
+        { id:"0800", label:"8:00 – 8:15 AM", cap:40, baseBooked:32 },
+        { id:"0815", label:"8:15 – 8:30 AM", cap:40, baseBooked:24 },
+        { id:"0830", label:"8:30 – 8:45 AM", cap:40, baseBooked:11 }
+    ],
+    lunch: [
+        { id:"1245", label:"12:45 – 1:00 PM", cap:40, baseBooked:36 },
+        { id:"1300", label:"1:00 – 1:15 PM", cap:40, baseBooked:31 },
+        { id:"1315", label:"1:15 – 1:30 PM", cap:40, baseBooked:15 },
+        { id:"1330", label:"1:30 – 1:45 PM", cap:40, baseBooked:9 }
+    ],
+    snacks: [
+        { id:"1645", label:"4:45 – 5:00 PM", cap:40, baseBooked:22 },
+        { id:"1700", label:"5:00 – 5:15 PM", cap:40, baseBooked:33 },
+        { id:"1715", label:"5:15 – 5:30 PM", cap:40, baseBooked:14 },
+        { id:"1730", label:"5:30 – 5:45 PM", cap:40, baseBooked:8 }
+    ],
+    dinner: [
+        { id:"1945", label:"7:45 – 8:00 PM", cap:40, baseBooked:28 },
+        { id:"2000", label:"8:00 – 8:15 PM", cap:40, baseBooked:37 },
+        { id:"2015", label:"8:15 – 8:30 PM", cap:40, baseBooked:16 },
+        { id:"2030", label:"8:30 – 8:45 PM", cap:40, baseBooked:10 }
+    ]
+};
+
+// Active booking draft state
+let draftBooking = {
+    meal: "lunch",
+    slotId: "1315",
+    slotLabel: "1:15 – 1:30 PM",
+    portions: { rice: "Full", roti: "Full", dal: "Full" }
+};
+let selectedWaitRating = "";
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function getJSON(key, fallback){
+    try{
+        const v = localStorage.getItem(key);
+        return v ? JSON.parse(v) : fallback;
+    }catch(e){ return fallback; }
+}
+function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+function getToday(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function escapeHTML(v){
+    return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function getStudentGroup(id){
+    const n = Number(id);
+    if(n <= 25) return "A";
+    if(n <= 50) return "B";
+    if(n <= 75) return "C";
+    return "D";
+}
+function getUsers(){ return getJSON(USERS_KEY, []); }
+function getPasses(){ return getJSON(PASSES_KEY, []); }
+function getFeedback(){ return getJSON(FEEDBACK_KEY, []); }
+function getVotes(){ return getJSON(VOTES_KEY, {}); }
+function getTodayVotes(){ return getVotes()[getToday()] || {}; }
+function getMenu(){
+    const m = getJSON(MENU_KEY, null);
+    if(!m){ saveJSON(MENU_KEY, DEFAULT_MENU); return JSON.parse(JSON.stringify(DEFAULT_MENU)); }
+    return m;
+}
+function getFinalMenu(){ return getJSON(FINAL_MENU_KEY, {}); }
+function getCurrentUser(){
+    try{ return JSON.parse(sessionStorage.getItem(CURRENT_USER_KEY)); }catch(e){ return null; }
+}
+
+/* Seed realistic sample data once so Slot Demand & Crowd Meter work out of the box */
+function seedInitialData(){
+    if(!localStorage.getItem(MENU_KEY)) saveJSON(MENU_KEY, DEFAULT_MENU);
+    if(!localStorage.getItem(CROWD_KEY)) localStorage.setItem(CROWD_KEY, "amber");
+    if(!localStorage.getItem(USERS_KEY)){
+        saveJSON(USERS_KEY, [
+            { name:"Rohan Verma", studentId:"101", room:"BH-3 / 402", foodPreference:"Vegetarian", password:"1234", group:"D" },
+            { name:"Ananya Rao", studentId:"18", room:"GH-2 / 210", foodPreference:"Vegetarian", password:"1234", group:"A" },
+            { name:"Kabir Gill", studentId:"42", room:"BH-1 / 115", foodPreference:"Non-Vegetarian", password:"1234", group:"B" }
+        ]);
+    }
+    if(!localStorage.getItem(PASSES_KEY)){
+        const today = getToday();
+        saveJSON(PASSES_KEY, [
+            { passNumber:"MP-482190", studentId:"18", name:"Ananya Rao", room:"GH-2 / 210", group:"A", meal:"lunch", slotId:"1315", slotLabel:"1:15 – 1:30 PM", food:"Rajma Rice & Roti", portions:{rice:"Half",roti:"Full",dal:"Full"}, served:false, date:today },
+            { passNumber:"MP-482195", studentId:"42", name:"Kabir Gill", room:"BH-1 / 115", group:"B", meal:"lunch", slotId:"1315", slotLabel:"1:15 – 1:30 PM", food:"Rajma Rice & Roti", portions:{rice:"Half",roti:"Half",dal:"Full"}, served:false, date:today },
+            { passNumber:"MP-482201", studentId:"101", name:"Rohan Verma", room:"BH-3 / 402", group:"D", meal:"lunch", slotId:"1300", slotLabel:"1:00 – 1:15 PM", food:"Dal Makhani & Rice", portions:{rice:"Full",roti:"Full",dal:"Full"}, served:true, date:today }
+        ]);
+    }
+}
+
+/* =========================================================
+   AUTH NAVIGATION
+========================================================= */
+function hideAllTopPages(){
+    ["registrationPage","studentLoginPage","adminLoginPage","mainApp","adminApp"].forEach(id=>{
+        document.getElementById(id).classList.add("hidden");
+    });
+}
+function showRegistration(){ hideAllTopPages(); document.getElementById("registrationPage").classList.remove("hidden"); }
+function showStudentLogin(){ hideAllTopPages(); document.getElementById("studentLoginPage").classList.remove("hidden"); }
+function showAdminLoginPage(){ hideAllTopPages(); document.getElementById("adminLoginPage").classList.remove("hidden"); }
+
+function quickDemoStudent(){
+    const users = getUsers();
+    const demo = users[0] || { name:"Rohan Verma", studentId:"101", room:"BH-3 / 402", foodPreference:"Vegetarian", group:"D" };
+    sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(demo));
+    showMainApp();
+}
+
+document.getElementById("registrationForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const name = document.getElementById("regName").value.trim();
+    const studentId = document.getElementById("regStudentId").value.trim();
+    const room = document.getElementById("regRoom").value.trim();
+    const foodPreference = document.getElementById("regFoodPreference").value;
+    const password = document.getElementById("regPassword").value;
+    const msg = document.getElementById("registrationMessage");
+
+    const users = getUsers();
+    if(users.some(u => String(u.studentId) === String(studentId))){
+        msg.style.color = "var(--red)";
+        msg.textContent = "This Student ID is already registered.";
+        return;
+    }
+    const user = { name, studentId, room, foodPreference, password, group:getStudentGroup(studentId) };
+    users.push(user);
+    saveJSON(USERS_KEY, users);
+    sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    msg.style.color = "var(--green)";
+    msg.textContent = "Registered! Opening dining flow...";
+    setTimeout(showMainApp, 500);
+});
+
+document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const id = document.getElementById("loginStudentId").value.trim();
+    const pw = document.getElementById("loginPassword").value;
+    const msg = document.getElementById("loginMessage");
+    const user = getUsers().find(u => String(u.studentId) === String(id) && u.password === pw);
+    if(!user){
+        msg.style.color = "var(--red)";
+        msg.textContent = "Invalid Student ID or password. (Or use Try Hosteller Flow)";
+        return;
+    }
+    sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    showMainApp();
+});
+
+function studentLogout(){
+    sessionStorage.removeItem(CURRENT_USER_KEY);
+    showStudentLogin();
+}
+
+/* =========================================================
+   STUDENT APP & 6-STEP FLOW
+========================================================= */
+function showMainApp(){
+    const user = getCurrentUser();
+    if(!user){ showStudentLogin(); return; }
+    hideAllTopPages();
+    document.getElementById("mainApp").classList.remove("hidden");
+
+    document.getElementById("headerUserName").textContent = user.name;
+    document.getElementById("headerUserGroup").textContent = "Group " + user.group;
+    document.getElementById("profileName").textContent = user.name;
+    document.getElementById("profileStudentId").textContent = user.studentId;
+    document.getElementById("profileRoom").textContent = user.room;
+    document.getElementById("profileFoodPreference").textContent = user.foodPreference;
+    document.getElementById("profileGroup").textContent = "Group " + user.group;
+
+    updateLiveCrowdView();
+    renderSlotCards();
+    populatePortionDishes();
+    renderDigitalPass();
+    renderCounterScan();
+    renderVotingOptions();
+    updateStudentFinalMenu();
+    showStudentPage("step1Page");
+}
+
+function showStudentPage(pageId){
+    document.querySelectorAll(".student-page").forEach(p => p.classList.add("hidden"));
+    const target = document.getElementById(pageId);
+    if(target) target.classList.remove("hidden");
+
+    document.querySelectorAll(".step-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-step") === pageId);
+    });
+
+    if(pageId === "step1Page") updateLiveCrowdView();
+    if(pageId === "step2Page") renderSlotCards();
+    if(pageId === "step3Page") populatePortionDishes();
+    if(pageId === "step4Page") renderDigitalPass();
+    if(pageId === "step5Page") renderCounterScan();
+    if(pageId === "menuVotePage"){ renderVotingOptions(); updateStudentFinalMenu(); }
+}
+
+/* STEP 1: LIVE CROWD */
+function updateLiveCrowdView(){
+    const status = localStorage.getItem(CROWD_KEY) || "amber";
+    const banner = document.getElementById("liveCrowdBanner");
+    const badge = document.getElementById("liveCrowdBadge");
+    const title = document.getElementById("liveCrowdTitle");
+    const desc = document.getElementById("liveCrowdDesc");
+    const waitEl = document.getElementById("statWaitTime");
+    const occEl = document.getElementById("statOccupancy");
+
+    banner.className = "crowd-banner " + status;
+    if(status === "green"){
+        badge.className = "badge badge-green";
+        badge.textContent = "GREEN · LOW WAIT";
+        title.textContent = "Calm Dining Hall (~2–4 min wait)";
+        desc.textContent = "Plenty of seats available right now. Walk over or reserve your slot to lock in your portion.";
+        waitEl.textContent = "3 min";
+        occEl.textContent = "38%";
+    }else if(status === "red"){
+        badge.className = "badge badge-red";
+        badge.textContent = "RED · PEAK RUSH";
+        title.textContent = "Heavy Queue Right Now (~20+ min wait)";
+        desc.textContent = "Serving counters are at peak capacity. We recommend booking the 1:15 – 1:30 PM or 1:30 – 1:45 PM slot.";
+        waitEl.textContent = "22 min";
+        occEl.textContent = "96%";
+    }else{
+        badge.className = "badge badge-amber";
+        badge.textContent = "AMBER · MODERATE RUSH";
+        title.textContent = "Busy Right Now (~12–15 min wait)";
+        desc.textContent = "Peak lunch rush is active. Choosing the 1:15 – 1:30 PM slot cuts wait time to under 4 minutes.";
+        waitEl.textContent = "14 min";
+        occEl.textContent = "78%";
+    }
+
+    const latestPass = getLatestUserPass();
+    document.getElementById("statActivePass").textContent = latestPass ? latestPass.slotLabel : "Not Booked";
+}
+
+/* STEP 2: SELECT MEAL SLOT */
+function getSlotLiveCount(meal, slotId, baseBooked){
+    const today = getToday();
+    const extra = getPasses().filter(p => p.date === today && p.meal === meal && p.slotId === slotId).length;
+    return Math.min(40, baseBooked + extra);
+}
+
+function renderSlotCards(){
+    const meal = document.getElementById("slotMealSelect").value;
+    draftBooking.meal = meal;
+    const slots = MEAL_SLOTS[meal] || [];
+    const grid = document.getElementById("slotCardsGrid");
+    grid.innerHTML = "";
+
+    slots.forEach(s => {
+        const count = getSlotLiveCount(meal, s.id, s.baseBooked);
+        const pct = Math.round((count / s.cap) * 100);
+        let badgeClass = "badge-green", badgeTxt = "Low Wait (<4m)", barColor = "var(--green)";
+        if(pct >= 85){ badgeClass = "badge-red"; badgeTxt = "Peak Rush"; barColor = "var(--red)"; }
+        else if(pct >= 65){ badgeClass = "badge-amber"; badgeTxt = "Moderate"; barColor = "var(--amber)"; }
+
+        const isSel = draftBooking.slotId === s.id;
+        const card = document.createElement("div");
+        card.className = "slot-card" + (isSel ? " selected" : "");
+        card.onclick = () => {
+            draftBooking.slotId = s.id;
+            draftBooking.slotLabel = s.label;
+            renderSlotCards();
+        };
+        card.innerHTML = `
+            <div class="slot-time">${s.label}</div>
+            <span class="badge ${badgeClass}">${badgeTxt}</span>
+            <div class="slot-bar"><div class="slot-bar-fill" style="width:${pct}%;background:${barColor};"></div></div>
+            <div class="muted">${count} / ${s.cap} students booked (${pct}%)</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function proceedToPortionStep(){
+    const meal = document.getElementById("slotMealSelect").value;
+    const slots = MEAL_SLOTS[meal] || [];
+    const match = slots.find(s => s.id === draftBooking.slotId) || slots[2] || slots[0];
+    draftBooking.slotId = match.id;
+    draftBooking.slotLabel = match.label;
+    showStudentPage("step3Page");
+}
+
+/* STEP 3: CHOOSE PORTION */
+function populatePortionDishes(){
+    const meal = draftBooking.meal || "lunch";
+    document.getElementById("step3SlotSummary").textContent =
+        `${meal.charAt(0).toUpperCase()+meal.slice(1)} · ${draftBooking.slotLabel}`;
+    const menu = getMenu();
+    const sel = document.getElementById("portionMainDish");
+    sel.innerHTML = "";
+    (menu[meal] || []).forEach(dish => {
+        const opt = document.createElement("option");
+        opt.value = dish;
+        opt.textContent = dish;
+        sel.appendChild(opt);
+    });
+}
+
+function setPortion(item, size, btn){
+    draftBooking.portions[item] = size;
+    const group = btn.parentElement;
+    group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
+
+function confirmBookingAndGeneratePass(){
+    const user = getCurrentUser();
+    if(!user) return;
+    const food = document.getElementById("portionMainDish").value || "Standard Meal";
+    const passes = getPasses();
+    const newPass = {
+        passNumber: "MP-" + Date.now().toString().slice(-6),
+        studentId: user.studentId,
+        name: user.name,
+        room: user.room,
+        group: user.group,
+        meal: draftBooking.meal,
+        slotId: draftBooking.slotId,
+        slotLabel: draftBooking.slotLabel,
+        food: food,
+        portions: { ...draftBooking.portions },
+        served: false,
+        date: getToday()
+    };
+    passes.push(newPass);
+    saveJSON(PASSES_KEY, passes);
+    showStudentPage("step4Page");
+}
+
+function getLatestUserPass(){
+    const user = getCurrentUser();
+    if(!user) return null;
+    const today = getToday();
+    const list = getPasses().filter(p => p.date === today && String(p.studentId) === String(user.studentId));
+    return list.length ? list[list.length - 1] : null;
+}
+
+/* STEP 4: DIGITAL DINING PASS */
+function buildQRHTML(seedStr){
+    let cells = "";
+    let hash = 0;
+    for(let i=0;i<seedStr.length;i++) hash = (hash*31 + seedStr.charCodeAt(i)) % 9973;
+    for(let r=0;r<7;r++){
+        for(let c=0;c<7;c++){
+            const corner = (r<2 && c<2) || (r<2 && c>4) || (r>4 && c<2);
+            const bit = corner || ((hash + r*7 + c*13) % 3 === 0);
+            cells += `<div class="qr-cell ${bit ? 'dark' : ''}"></div>`;
+        }
+    }
+    return `<div class="qr-box">${cells}</div>`;
+}
+
+function renderDigitalPass(){
+    const pass = getLatestUserPass();
+    const notice = document.getElementById("passEmptyNotice");
+    const container = document.getElementById("digitalPassContainer");
+    if(!pass){
+        notice.classList.remove("hidden");
+        container.innerHTML = "";
+        return;
+    }
+    notice.classList.add("hidden");
+    const p = pass.portions || { rice:"Full", roti:"Full", dal:"Full" };
+    container.innerHTML = `
+        <div class="dining-pass">
+            <div class="pass-header">
+                <strong>DIGITAL DINING PASS</strong>
+                <span class="badge" style="background:#fff;color:var(--teal);">${escapeHTML(pass.meal.toUpperCase())}</span>
+            </div>
+            <div class="pass-body">
+                ${buildQRHTML(pass.passNumber)}
+                <div class="pass-token">${escapeHTML(pass.passNumber)}</div>
+                <div class="pass-detail-row"><strong>Student</strong><span>${escapeHTML(pass.name)} (ID: ${escapeHTML(pass.studentId)})</span></div>
+                <div class="pass-detail-row"><strong>Dining Slot</strong><span class="badge badge-navy">${escapeHTML(pass.slotLabel)}</span></div>
+                <div class="pass-detail-row"><strong>Main Dish</strong><span>${escapeHTML(pass.food)}</span></div>
+                <div class="pass-detail-row">
+                    <strong>Portion Selections</strong>
+                    <span>
+                        <span class="badge ${p.rice==='Half'?'badge-teal':'badge-navy'}">Rice: ${escapeHTML(p.rice)}</span>
+                        <span class="badge ${p.roti==='Half'?'badge-teal':'badge-navy'}">Roti: ${escapeHTML(p.roti)}</span>
+                        <span class="badge ${p.dal==='Half'?'badge-teal':'badge-navy'}">Dal: ${escapeHTML(p.dal)}</span>
+                    </span>
+                </div>
+                <div class="pass-detail-row"><strong>Status</strong><span>${pass.served ? '<span class="badge badge-green">Served at Counter</span>' : '<span class="badge badge-amber">Ready to Scan</span>'}</span></div>
+            </div>
+        </div>
+    `;
+}
+
+/* STEP 5: MESS COUNTER SCAN */
+function renderCounterScan(){
+    const pass = getLatestUserPass();
+    const container = document.getElementById("counterScanContent");
+    if(!pass){
+        container.innerHTML = `<div class="callout">No active dining pass found. Complete Steps 2 & 3 first.</div>`;
+        return;
+    }
+    const p = pass.portions || { rice:"Full", roti:"Full", dal:"Full" };
+    container.innerHTML = `
+        <div class="card" style="max-width:640px;margin:0 auto;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <h2 style="color:var(--navy);font-size:18px;">Token ${escapeHTML(pass.passNumber)} Scanned</h2>
+                <span class="badge badge-orange">${escapeHTML(pass.slotLabel)}</span>
+            </div>
+            <p class="muted" style="margin-top:4px;">Student: <strong>${escapeHTML(pass.name)}</strong> · ${escapeHTML(pass.food)}</p>
+
+            <div class="counter-serving-box">
+                <h3>Serving Counter Instruction</h3>
+                <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;">
+                    <div class="card" style="margin:0;padding:12px;text-align:center;">
+                        <div class="muted">Rice</div>
+                        <strong style="font-size:18px;color:var(--navy);">${escapeHTML(p.rice)}</strong>
+                    </div>
+                    <div class="card" style="margin:0;padding:12px;text-align:center;">
+                        <div class="muted">Roti</div>
+                        <strong style="font-size:18px;color:var(--navy);">${escapeHTML(p.roti)}</strong>
+                    </div>
+                    <div class="card" style="margin:0;padding:12px;text-align:center;">
+                        <div class="muted">Dal / Curry</div>
+                        <strong style="font-size:18px;color:var(--navy);">${escapeHTML(p.dal)}</strong>
+                    </div>
+                </div>
+            </div>
+
+            ${pass.served
+                ? `<div class="callout" style="background:var(--green-bg);border-left-color:var(--green);color:var(--green);"><strong>Meal Served!</strong> Exact portions logged. You can now submit 1-tap feedback in Step 6.</div>`
+                : `<button class="primary-btn" style="background:var(--orange);" onclick="markPassServed('${escapeHTML(pass.passNumber)}')">Confirm Exact Portion Served</button>`
+            }
+        </div>
+    `;
+}
+
+function markPassServed(passNumber){
+    const passes = getPasses();
+    const target = passes.find(p => p.passNumber === passNumber);
+    if(target) target.served = true;
+    saveJSON(PASSES_KEY, passes);
+    renderCounterScan();
+    renderDigitalPass();
+}
+
+/* STEP 6: QUICK FEEDBACK */
+function selectWaitRating(val, btn){
+    selectedWaitRating = val;
+    document.querySelectorAll("#waitRatingPills .rating-pill").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+}
+
+document.getElementById("feedbackForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const user = getCurrentUser();
+    if(!user) return;
+    const rating = document.getElementById("feedbackRating").value;
+    const text = document.getElementById("feedbackText").value.trim() || "No additional comment.";
+    const list = getFeedback();
+    list.push({
+        date: getToday(),
+        studentId: user.studentId,
+        name: user.name,
+        waitExperience: selectedWaitRating || "Fast (<5m)",
+        rating: Number(rating),
+        feedback: text
+    });
+    saveJSON(FEEDBACK_KEY, list);
+    const msg = document.getElementById("feedbackMessage");
+    msg.style.color = "var(--green)";
+    msg.textContent = "Thank you! Your 1-tap feedback has been sent to Mess Operations.";
+    document.getElementById("feedbackForm").reset();
+});
+
+/* =========================================================
+   PRE-MEAL VOTING & FINAL MENU
+========================================================= */
+function renderVotingOptions(){
+    const menu = getMenu();
+    const container = document.getElementById("studentVotingGrid");
+    if(!container) return;
+    container.innerHTML = "";
+    ["breakfast","lunch","snacks","dinner"].forEach(meal => {
+        const card = document.createElement("div");
+        card.className = "card";
+        let opts = "";
+        (menu[meal] || []).forEach((food, idx) => {
+            opts += `<label style="display:block;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:6px;cursor:pointer;">
+                <input type="radio" name="vote_${meal}" value="${escapeHTML(food)}" style="margin-right:8px;">${escapeHTML(food)}
+            </label>`;
+        });
+        card.innerHTML = `<h3 style="color:var(--navy);text-transform:capitalize;">${meal}</h3>${opts}`;
+        container.appendChild(card);
+    });
+}
+
+document.getElementById("votingForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const user = getCurrentUser();
+    if(!user) return;
+    const selected = {};
+    for(const meal of ["breakfast","lunch","snacks","dinner"]){
+        const r = document.querySelector(`input[name="vote_${meal}"]:checked`);
+        if(!r){
+            document.getElementById("votingMessage").style.color = "var(--red)";
+            document.getElementById("votingMessage").textContent = "Please choose one dish for every meal.";
+            return;
+        }
+        selected[meal] = r.value;
+    }
+    const votes = getVotes();
+    const today = getToday();
+    if(!votes[today]) votes[today] = {};
+    votes[today][user.studentId] = { studentId:user.studentId, name:user.name, ...selected };
+    saveJSON(VOTES_KEY, votes);
+    document.getElementById("votingMessage").style.color = "var(--green)";
+    document.getElementById("votingMessage").textContent = "Pre-meal vote recorded!";
+    updateStudentFinalMenu();
+});
+
+function calculateMealCounts(meal){
+    const menu = getMenu();
+    const counts = {};
+    (menu[meal] || []).forEach(f => counts[f] = 0);
+    Object.values(getTodayVotes()).forEach(v => {
+        if(v[meal]) counts[v[meal]] = (counts[v[meal]] || 0) + 1;
+    });
+    return counts;
+}
+
+function getCalculatedFinalMenu(){
+    const res = {};
+    ["breakfast","lunch","snacks","dinner"].forEach(meal => {
+        const entries = Object.entries(calculateMealCounts(meal));
+        entries.sort((a,b) => b[1] - a[1]);
+        res[meal] = (entries.length && entries[0][1] > 0) ? entries[0][0] : (getMenu()[meal]?.[0] || "TBD");
+    });
+    return res;
+}
+
+function updateStudentFinalMenu(){
+    const container = document.getElementById("studentFinalMenuGrid");
+    if(!container) return;
+    const saved = getFinalMenu();
+    const finalM = saved.date === getToday() ? saved : getCalculatedFinalMenu();
+    container.innerHTML = "";
+    ["breakfast","lunch","snacks","dinner"].forEach(meal => {
+        container.innerHTML += `<div class="card"><div class="eyebrow">${meal}</div><strong style="color:var(--navy);font-size:16px;">${escapeHTML(finalM[meal])}</strong></div>`;
+    });
+}
+
+/* =========================================================
+   ADMIN / MESS STAFF DASHBOARD
+========================================================= */
+document.getElementById("adminLoginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const u = document.getElementById("adminUsername").value.trim();
+    const p = document.getElementById("adminPassword").value;
+    if(u !== ADMIN_USERNAME || p !== ADMIN_PASSWORD){
+        document.getElementById("adminLoginMessage").style.color = "var(--red)";
+        document.getElementById("adminLoginMessage").textContent = "Invalid credentials. Use admin / admin123.";
+        return;
+    }
+    sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
+    showAdminApp();
+});
+
+function showAdminApp(){
+    hideAllTopPages();
+    document.getElementById("adminApp").classList.remove("hidden");
+    refreshAdminDashboard();
+    showAdminPage("adminDashboardPage");
+}
+
+function showAdminPage(pageId){
+    document.querySelectorAll(".admin-page").forEach(p => p.classList.remove("active"));
+    const el = document.getElementById(pageId);
+    if(el) el.classList.add("active");
+    const pages = ["adminDashboardPage","adminPassesPage","adminVotingPage","adminMenuPage","adminFinalMenuPage","adminStudentsPage","adminFeedbackPage"];
+    document.querySelectorAll(".admin-sidebar button").forEach((b, i) => b.classList.toggle("active", pages[i] === pageId));
+    refreshAdminDashboard();
+}
+
+function setCrowdStatus(level){
+    localStorage.setItem(CROWD_KEY, level);
+    alert("Live crowd status updated to " + level.toUpperCase() + " for all hostellers.");
+}
+
+function refreshAdminDashboard(){
+    const today = getToday();
+    const passes = getPasses().filter(p => p.date === today);
+    const fb = getFeedback();
+
+    document.getElementById("adminPassCount").textContent = passes.length;
+    document.getElementById("adminHalfRiceCount").textContent = passes.filter(p => p.portions?.rice === "Half").length;
+    document.getElementById("adminHalfRotiCount").textContent = passes.filter(p => p.portions?.roti === "Half").length;
+    document.getElementById("adminFeedbackCount").textContent = fb.length;
+
+    // Slot & Portion Demand Summary Table (CP5.10 Task 4)
+    const tbody = document.getElementById("adminSlotDemandTable");
+    tbody.innerHTML = "";
+    MEAL_SLOTS.lunch.forEach(slot => {
+        const sp = passes.filter(p => p.meal === "lunch" && p.slotId === slot.id);
+        const total = Math.min(40, slot.baseBooked + sp.length);
+        const halfRice = sp.filter(p => p.portions?.rice === "Half").length + Math.round(slot.baseBooked * 0.35);
+        const fullRice = Math.max(0, total - halfRice);
+        const halfRoti = sp.filter(p => p.portions?.roti === "Half").length + Math.round(slot.baseBooked * 0.3);
+        const fullRoti = Math.max(0, total - halfRoti);
+        const halfDal = sp.filter(p => p.portions?.dal === "Half").length + Math.round(slot.baseBooked * 0.25);
+        const fullDal = Math.max(0, total - halfDal);
+
+        let note = '<span class="badge badge-green">Standard batch — calm flow</span>';
+        if(total >= 34) note = '<span class="badge badge-red">Open 2nd serving line + prep fresh batch</span>';
+        else if(halfRice >= total * 0.4) note = '<span class="badge badge-teal">Reduce rice batch by ~15% (high Half requests)</span>';
+
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${slot.label}</strong></td>
+                <td><strong>${total}</strong> / ${slot.cap}</td>
+                <td>${halfRice} Half / ${fullRice} Full</td>
+                <td>${halfRoti} Half / ${fullRoti} Full</td>
+                <td>${halfDal} Half / ${fullDal} Full</td>
+                <td>${note}</td>
+            </tr>
+        `;
+    });
+
+    // Passes Table
+    const pt = document.getElementById("adminPassesTable");
+    pt.innerHTML = passes.length ? passes.map(p => `
+        <tr>
+            <td><strong>${escapeHTML(p.passNumber)}</strong></td>
+            <td>${escapeHTML(p.name)} (${escapeHTML(p.studentId)})</td>
+            <td>${escapeHTML(p.meal.toUpperCase())} · ${escapeHTML(p.slotLabel)}</td>
+            <td>${escapeHTML(p.food)}</td>
+            <td>Rice: <strong>${escapeHTML(p.portions?.rice||"Full")}</strong> · Roti: <strong>${escapeHTML(p.portions?.roti||"Full")}</strong> · Dal: <strong>${escapeHTML(p.portions?.dal||"Full")}</strong></td>
+            <td>${p.served ? '<span class="badge badge-green">Served</span>' : '<span class="badge badge-amber">Pending</span>'}</td>
+        </tr>
+    `).join("") : `<tr><td colspan="6">No passes booked today.</td></tr>`;
+
+    renderAdminVoting();
+    loadAdminMenuInputs();
+    renderAdminFinalMenu();
+    renderAdminStudents();
+    renderAdminFeedback();
+}
+
+function renderAdminVoting(){
+    const c = document.getElementById("adminVotingGrid");
+    c.innerHTML = "";
+    ["breakfast","lunch","snacks","dinner"].forEach(meal => {
+        const counts = calculateMealCounts(meal);
+        const total = Object.values(counts).reduce((a,b)=>a+b,0);
+        let rows = "";
+        Object.entries(counts).forEach(([food,cnt]) => {
+            const pct = total ? Math.round(cnt/total*100) : 0;
+            rows += `<div class="vote-bar">
+                <div class="vote-bar-header"><span>${escapeHTML(food)}</span><strong>${cnt} (${pct}%)</strong></div>
+                <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+            </div>`;
+        });
+        c.innerHTML += `<div class="card"><h3 style="color:var(--navy);text-transform:capitalize;margin-bottom:8px;">${meal}</h3>${rows}</div>`;
+    });
+}
+
+function loadAdminMenuInputs(){
+    const m = getMenu();
+    ["breakfast","lunch","snacks","dinner"].forEach(k => {
+        const el = document.getElementById("menu" + k.charAt(0).toUpperCase() + k.slice(1));
+        if(el) el.value = (m[k] || []).join("\n");
+    });
+}
+
+function saveAdminMenu(){
+    const newM = {};
+    for(const k of ["breakfast","lunch","snacks","dinner"]){
+        const lines = document.getElementById("menu" + k.charAt(0).toUpperCase() + k.slice(1)).value
+            .split("\n").map(s=>s.trim()).filter(Boolean);
+        if(!lines.length){ alert("Each meal needs at least one option."); return; }
+        newM[k] = lines;
+    }
+    saveJSON(MENU_KEY, newM);
+    document.getElementById("menuSaveMessage").innerHTML = `<div class="callout" style="background:var(--green-bg);border-left-color:var(--green);">Menu saved successfully.</div>`;
+    refreshAdminDashboard();
+}
+
+function resetAdminMenu(){
+    saveJSON(MENU_KEY, DEFAULT_MENU);
+    loadAdminMenuInputs();
+    document.getElementById("menuSaveMessage").innerHTML = `<div class="callout">Default menu restored.</div>`;
+}
+
+function renderAdminFinalMenu(){
+    const c = document.getElementById("adminFinalMenuControls");
+    const menu = getMenu();
+    const saved = getFinalMenu();
+    const calc = getCalculatedFinalMenu();
+    c.innerHTML = "";
+    ["breakfast","lunch","snacks","dinner"].forEach(meal => {
+        const cur = saved.date === getToday() ? saved[meal] : calc[meal];
+        const opts = (menu[meal] || []).map(f => `<option value="${escapeHTML(f)}" ${f===cur?'selected':''}>${escapeHTML(f)}</option>`).join("");
+        c.innerHTML += `<div class="card"><h3 style="color:var(--navy);text-transform:capitalize;margin-bottom:8px;">${meal}</h3>
+            <select id="final_${meal}" class="search-input" style="width:100%;">${opts}</select></div>`;
+    });
+}
+
+function useWinnersAsFinalMenu(){
+    const w = getCalculatedFinalMenu();
+    saveJSON(FINAL_MENU_KEY, { date:getToday(), ...w });
+    renderAdminFinalMenu();
+    document.getElementById("finalMenuSaveMessage").style.color = "var(--green)";
+    document.getElementById("finalMenuSaveMessage").textContent = "Final menu updated from today's vote winners.";
+}
+
+function saveFinalMenu(){
+    const fm = { date:getToday() };
+    ["breakfast","lunch","snacks","dinner"].forEach(m => fm[m] = document.getElementById("final_"+m).value);
+    saveJSON(FINAL_MENU_KEY, fm);
+    document.getElementById("finalMenuSaveMessage").style.color = "var(--green)";
+    document.getElementById("finalMenuSaveMessage").textContent = "Final menu saved.";
+}
+
+function renderAdminStudents(){
+    const users = getUsers();
+    const passes = getPasses().filter(p => p.date === getToday());
+    const q = (document.getElementById("studentSearch")?.value || "").toLowerCase();
+    const gf = document.getElementById("studentGroupFilter")?.value || "all";
+    const tbody = document.getElementById("adminStudentsTable");
+    const filtered = users.filter(u =>
+        (!q || u.name.toLowerCase().includes(q) || String(u.studentId).includes(q)) &&
+        (gf === "all" || u.group === gf)
+    );
+    tbody.innerHTML = filtered.length ? filtered.map(u => {
+        const up = passes.find(p => String(p.studentId) === String(u.studentId));
+        return `<tr>
+            <td><strong>${escapeHTML(u.name)}</strong></td>
+            <td>${escapeHTML(u.studentId)}</td>
+            <td>${escapeHTML(u.room)}</td>
+            <td><span class="badge badge-navy">Group ${escapeHTML(u.group)}</span></td>
+            <td>${escapeHTML(u.foodPreference)}</td>
+            <td>${up ? `<span class="badge badge-teal">${escapeHTML(up.slotLabel)}</span>` : '<span class="muted">Not booked</span>'}</td>
+        </tr>`;
+    }).join("") : `<tr><td colspan="6">No hostellers found.</td></tr>`;
+}
+
+function renderAdminFeedback(){
+    const fb = getFeedback();
+    const tbody = document.getElementById("adminFeedbackTable");
+    tbody.innerHTML = fb.length ? [...fb].reverse().map(f => `
+        <tr>
+            <td>${escapeHTML(f.date)}</td>
+            <td><strong>${escapeHTML(f.name)}</strong> (${escapeHTML(f.studentId)})</td>
+            <td><span class="badge badge-indigo">${escapeHTML(f.waitExperience || "Fast")}</span></td>
+            <td>${escapeHTML(f.rating)} / 5</td>
+            <td>${escapeHTML(f.feedback)}</td>
+        </tr>
+    `).join("") : `<tr><td colspan="5">No feedback submitted yet.</td></tr>`;
+}
+
+function adminLogout(){
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    showStudentLogin();
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+(function init(){
+    seedInitialData();
+    if(sessionStorage.getItem(ADMIN_SESSION_KEY) === "true"){
+        showAdminApp();
+    }else if(getCurrentUser()){
+        showMainApp();
+    }else{
+        showStudentLogin();
+    }
+})();
+</script>
+</body>
+</html>
